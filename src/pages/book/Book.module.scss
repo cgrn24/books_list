@@ -55,6 +55,15 @@
   font-weight: bold;
 }
 
+.backButton {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
 @media (max-width: 768px) {
   .bookHeader {
     flex-direction: column;

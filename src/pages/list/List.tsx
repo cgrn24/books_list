@@ -5,18 +5,37 @@ import styles from './List.module.scss'
 import { Toolbar } from '../../components/toolbar/Toolbar'
 import { useDebounce } from '../../services/useDebounce'
 import { LanguageSelect } from '../../components/languageselect/LanguageSelect'
+import cover from '../../assets/nocover.png'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 export const List = () => {
-  const [searchValue, setSearchValue] = useState('')
-  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([])
+  const [searchParams, setSearchParams] = useSearchParams()
+  const initialSearch = searchParams.get('search') || ''
+  const initialPage = searchParams.get('page') || ''
+  const initialLanguages = searchParams.get('languages')?.split(',') || []
+  const navigate = useNavigate()
+
+  const [page, setPage] = useState(initialPage)
+  const [searchValue, setSearchValue] = useState(initialSearch)
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>(initialLanguages)
   const debouncedSearchValue = useDebounce(searchValue, 500)
-  const { booksList, fetchNextPage, hasNextPage, isFetchingNextPage } = useBooksList(debouncedSearchValue, selectedLanguages)
+  const { booksList, fetchNextPage, hasNextPage, isFetchingNextPage } = useBooksList(debouncedSearchValue, selectedLanguages, initialPage)
+
+  useEffect(() => {
+    setSearchParams({
+      page: page,
+      search: searchValue,
+      languages: selectedLanguages.join(','),
+    })
+  }, [searchValue, selectedLanguages, setSearchParams, page])
 
   useEffect(() => {
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement
       if (scrollTop + clientHeight >= scrollHeight - 10 && hasNextPage && !isFetchingNextPage) {
-        fetchNextPage()
+        fetchNextPage().then(() => {
+          setPage((prevPage) => String(Number(prevPage) + 1))
+        })
       }
     }
 
@@ -34,7 +53,7 @@ export const List = () => {
       <div className={styles.cardsGrid}>
         {booksList?.map((item) => {
           const authorName = item.authors?.[0]?.name
-          const imageUrl = item.formats?.['image/jpeg']
+          const imageUrl = item.formats?.['image/jpeg'] ? item.formats['image/jpeg'] : cover
           const birthYear = item.authors?.[0]?.birth_year
           const deathYear = item.authors?.[0]?.death_year
 
@@ -44,9 +63,9 @@ export const List = () => {
               author={authorName}
               image={imageUrl}
               title={item.title}
-              id={item.id}
               years={[birthYear, deathYear]}
               count={item.download_count}
+              onClick={() => navigate(`/book/${item.id}`, { state: { search: searchValue, languages: selectedLanguages, page: initialPage } })}
             />
           )
         })}

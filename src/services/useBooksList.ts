@@ -45,12 +45,14 @@ const getList = async ({ pageParam }: { pageParam: string }) => {
   return response.data
 }
 
-export const useBooksList = (searchValue: string, selectedLanguages: string[]) => {
+export const useBooksList = (searchValue: string, selectedLanguages: string[], initialPage: string) => {
+  const langParams = selectedLanguages.length > 0 ? `&languages=${selectedLanguages.join(',')}` : ''
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
     queryKey: ['list', searchValue, selectedLanguages],
     queryFn: getList,
     getNextPageParam: (lastPage) => lastPage.next,
-    initialPageParam: `https://gutendex.com/books/?search=${searchValue}&languages=${selectedLanguages.join(',')}`,
+    initialPageParam: `https://gutendex.com/books/?page=${initialPage}&search=${searchValue}${langParams}`,
   })
   return {
     booksList: data?.pages.flatMap((page) => page.results) || [],

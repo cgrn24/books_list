@@ -1,27 +1,24 @@
 import { FC } from 'react'
 import styles from './Card.module.scss'
-import { Link } from 'react-router-dom'
 
 type CardType = {
   title: string
   author: string
   image: string
-  id: number
   years?: number[]
   count?: number
+  onClick: () => void
 }
 
-export const Card: FC<CardType> = ({ title, author, image, id, years, count }) => {
+export const Card: FC<CardType> = ({ title, author, image, years, count, onClick }) => {
   return (
     <div className={styles.card}>
       <div>
-        <Link to={`/book/${id}`}>
-          <img src={image} alt={title} className={styles.image} />
-        </Link>
+        <img src={image} alt={title} className={styles.image} onClick={onClick} />
       </div>
-      <Link to={`/book/${id}`}>
-        <div className={styles.title}>{title}</div>
-      </Link>
+      <div className={styles.title} onClick={onClick}>
+        {title}
+      </div>
       <div className={styles.author}>
         {author} ({years?.join(' - ')})
       </div>
