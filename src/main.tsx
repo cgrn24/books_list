@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { List } from './pages/list/List'
 import { Book } from './pages/book/Book'
+import './index.css'
 
 const queryClient = new QueryClient()
 

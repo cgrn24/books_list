@@ -40,27 +40,20 @@ export type BooksList = {
   }>
 }
 
-// export const useBooksList = () => {
-//   const getList = (): Promise<BooksList> => axios.get('https://gutendex.com/books/').then((res) => res.data)
-//   const { data: booksList } = useQuery({ queryKey: ['list'], queryFn: getList })
-
-//   return booksList?.results
-// }
-
 const getList = async ({ pageParam }: { pageParam: string }) => {
   const response = await axios.get(pageParam)
   return response.data
 }
 
-export const useBooksList = () => {
+export const useBooksList = (searchValue: string, selectedLanguages: string[]) => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ['list'],
+    queryKey: ['list', searchValue, selectedLanguages],
     queryFn: getList,
     getNextPageParam: (lastPage) => lastPage.next,
-    initialPageParam: 'https://gutendex.com/books/',
+    initialPageParam: `https://gutendex.com/books/?search=${searchValue}&languages=${selectedLanguages.join(',')}`,
   })
   return {
-    booksList: data?.pages.flatMap((page) => page.results) || [], // Собираем все книги из страниц
+    booksList: data?.pages.flatMap((page) => page.results) || [],
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,

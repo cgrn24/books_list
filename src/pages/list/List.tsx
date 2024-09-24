@@ -1,10 +1,16 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Card } from '../../components/card/Card'
 import { useBooksList } from '../../services/useBooksList'
 import styles from './List.module.scss'
+import { Toolbar } from '../../components/toolbar/Toolbar'
+import { useDebounce } from '../../services/useDebounce'
+import { LanguageSelect } from '../../components/languageselect/LanguageSelect'
 
 export const List = () => {
-  const { booksList, fetchNextPage, hasNextPage, isFetchingNextPage } = useBooksList()
+  const [searchValue, setSearchValue] = useState('')
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([])
+  const debouncedSearchValue = useDebounce(searchValue, 500)
+  const { booksList, fetchNextPage, hasNextPage, isFetchingNextPage } = useBooksList(debouncedSearchValue, selectedLanguages)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,7 +27,10 @@ export const List = () => {
   return (
     <div className={styles.booksListContainer}>
       <h1 className={styles.title}>Books List</h1>
-      <div className={styles.toolbar}> {/* Тут будет компонент поиска */} </div>
+      <div className={styles.toolbar}>
+        <LanguageSelect selectedLanguages={selectedLanguages} onChange={setSelectedLanguages} />
+        <Toolbar value={searchValue} setValue={setSearchValue} />
+      </div>
       <div className={styles.cardsGrid}>
         {booksList?.map((item) => {
           const authorName = item.authors?.[0]?.name

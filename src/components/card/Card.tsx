@@ -25,7 +25,7 @@ export const Card: FC<CardType> = ({ title, author, image, id, years, count }) =
       <div className={styles.author}>
         {author} ({years?.join(' - ')})
       </div>
-      <div className={styles.count}>{count}</div>
+      <div className={styles.count}>Downloads count: {count}</div>
     </div>
   )
 }
