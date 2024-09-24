@@ -60,6 +60,7 @@ export const List = () => {
           return (
             <Card
               key={item.id}
+              id={item.id}
               author={authorName}
               image={imageUrl}
               title={item.title}
