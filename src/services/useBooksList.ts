@@ -48,7 +48,7 @@ const getList = async ({ pageParam }: { pageParam: string }) => {
 export const useBooksList = (searchValue: string, selectedLanguages: string[], initialPage: string) => {
   const langParams = selectedLanguages.length > 0 ? `&languages=${selectedLanguages.join(',')}` : ''
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching, isFetched } = useInfiniteQuery({
     queryKey: ['list', searchValue, selectedLanguages],
     queryFn: getList,
     getNextPageParam: (lastPage) => lastPage.next,
@@ -59,5 +59,7 @@ export const useBooksList = (searchValue: string, selectedLanguages: string[], i
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isFetching,
+    isFetched,
   }
 }

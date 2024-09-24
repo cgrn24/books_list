@@ -19,7 +19,11 @@ export const List = () => {
   const [searchValue, setSearchValue] = useState(initialSearch)
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(initialLanguages)
   const debouncedSearchValue = useDebounce(searchValue, 500)
-  const { booksList, fetchNextPage, hasNextPage, isFetchingNextPage } = useBooksList(debouncedSearchValue, selectedLanguages, initialPage)
+  const { booksList, fetchNextPage, hasNextPage, isFetchingNextPage, isFetching, isFetched } = useBooksList(
+    debouncedSearchValue,
+    selectedLanguages,
+    initialPage
+  )
 
   useEffect(() => {
     setSearchParams({
@@ -50,6 +54,8 @@ export const List = () => {
         <LanguageSelect selectedLanguages={selectedLanguages} onChange={setSelectedLanguages} />
         <Toolbar value={searchValue} setValue={setSearchValue} />
       </div>
+      {!!isFetching && !isFetched && <p>Loading books...</p>}
+      {!isFetching && booksList?.length === 0 && <p>No books found or something went wrong</p>}
       <div className={styles.cardsGrid}>
         {booksList?.map((item) => {
           const authorName = item.authors?.[0]?.name
