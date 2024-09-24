@@ -1,0 +1,27 @@
+.card {
+  width: 250px;
+  background-color: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+.image {
+  width: 100%;
+  height: 300px;
+  width: 200px;
+  object-fit: cover;
+}
+.title {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+.author {
+  font-size: 1rem;
+}
+.count {
+  font-size: 1rem;
+}
