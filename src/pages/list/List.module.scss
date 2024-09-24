@@ -30,12 +30,17 @@
   text-align: center;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1282px) {
   .cardsGrid {
     grid-template-columns: repeat(4, 250px);
   }
 }
 
+@media (min-width: 1024px) and (max-width: 1281px) {
+  .cardsGrid {
+    grid-template-columns: repeat(3, 250px);
+  }
+}
 @media (min-width: 768px) and (max-width: 1023px) {
   .cardsGrid {
     grid-template-columns: repeat(2, 250px);

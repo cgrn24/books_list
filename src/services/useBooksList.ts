@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import axios from 'axios'
 
 export type BooksList = {
@@ -40,9 +40,29 @@ export type BooksList = {
   }>
 }
 
-export const useBooksList = () => {
-  const getList = (): Promise<BooksList> => axios.get('https://gutendex.com/books/').then((res) => res.data)
-  const { data: booksList } = useQuery({ queryKey: ['list'], queryFn: getList })
+// export const useBooksList = () => {
+//   const getList = (): Promise<BooksList> => axios.get('https://gutendex.com/books/').then((res) => res.data)
+//   const { data: booksList } = useQuery({ queryKey: ['list'], queryFn: getList })
 
-  return booksList?.results
+//   return booksList?.results
+// }
+
+const getList = async ({ pageParam }: { pageParam: string }) => {
+  const response = await axios.get(pageParam)
+  return response.data
+}
+
+export const useBooksList = () => {
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: ['list'],
+    queryFn: getList,
+    getNextPageParam: (lastPage) => lastPage.next,
+    initialPageParam: 'https://gutendex.com/books/',
+  })
+  return {
+    booksList: data?.pages.flatMap((page) => page.results) || [], // Собираем все книги из страниц
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  }
 }
